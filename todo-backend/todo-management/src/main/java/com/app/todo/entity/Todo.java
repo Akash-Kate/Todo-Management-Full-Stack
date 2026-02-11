@@ -27,7 +27,8 @@ public class Todo
 	public Todo() {
 		
 	}
-	
+
+
 	public Todo(Long id, String title, String description, boolean completed) {
 		super();
 		this.id = id;
@@ -35,38 +36,55 @@ public class Todo
 		this.description = description;
 		this.completed = completed;
 	}
-	
+
+
 	public Long getId() {
 		return id;
 	}
+
+
 	public void setId(Long id) {
 		this.id = id;
 	}
+
+
 	public String getTitle() {
 		return title;
 	}
+
+
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	public String getDescriptiopn() {
+
+
+	public String getDescription() {
 		return description;
 	}
-	public void setDescriptiopn(String descriptiopn) {
-		this.description = descriptiopn;
+
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
+
+
 	public boolean isCompleted() {
 		return completed;
 	}
+
+
 	public void setCompleted(boolean completed) {
 		this.completed = completed;
 	}
-	
+
 
 	@Override
 	public String toString() {
 		return "Todo [id=" + id + ", title=" + title + ", description=" + description + ", completed=" + completed
 				+ "]";
 	}
+	
+	
 	
 	
 }

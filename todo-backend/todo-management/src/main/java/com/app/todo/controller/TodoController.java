@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,6 +33,7 @@ public class TodoController {
 		
 		
 		// Build add todo REST API
+		@PreAuthorize("hasRole('ADMIN')") // Method Level Security -> Only ADMin user can access this Add Todo REST API
 		@PostMapping
 		public ResponseEntity<TodoDto> addTodo(@RequestBody TodoDto todoDto)
 		{
@@ -43,6 +45,7 @@ public class TodoController {
 	
 		
 		// Build get todo REST API
+		@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 		@GetMapping("{id}")
 		public ResponseEntity<TodoDto> getTodo(@PathVariable("id") Long todoId)
 		{
@@ -54,6 +57,7 @@ public class TodoController {
 		
 		
 		// Build get all todos REST API
+		@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 		@GetMapping
 		public ResponseEntity<List<TodoDto>> getAllTodods()
 		{
@@ -68,6 +72,7 @@ public class TodoController {
 		
 		
 		// Build Update TODO REST API
+		@PreAuthorize("hasRole('ADMIN')")
 		@PutMapping("{id}")
 		public ResponseEntity<TodoDto> updateTodo(@RequestBody TodoDto todoDto, @PathVariable("id") Long todoId)
 		{
@@ -77,6 +82,7 @@ public class TodoController {
 		}
 		
 		// Build delete Todo REST API
+		@PreAuthorize("hasRole('ADMIN')")
 		@DeleteMapping("{id}")
 		public ResponseEntity<String> deleteTodo(@PathVariable("id") Long todoId)
 		{
@@ -85,8 +91,9 @@ public class TodoController {
 			return ResponseEntity.ok("Todo Deleted Successfully");
 		}
 		
-		// Build COMPLETE Todo Rest Api
 		
+		// Build COMPLETE Todo Rest Api
+		@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 		@PatchMapping("{id}/complete")
 		public ResponseEntity<TodoDto> completeTodo(@PathVariable("id") Long todoId)
 		{
@@ -97,6 +104,7 @@ public class TodoController {
 		}
 		
 		
+		@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 		@PatchMapping("{id}/incomplete")
 		public ResponseEntity<TodoDto> inColeteTodo(@PathVariable("id") Long todoId)
 		{

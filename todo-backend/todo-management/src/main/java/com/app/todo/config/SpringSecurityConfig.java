@@ -22,13 +22,13 @@ public class SpringSecurityConfig
 {
 	
 	
-	private UserDetails userDetails;   // In order to achieve loose coupling we are using an Interface
+	private UserDetailsService userDetailsService;   // In order to achieve loose coupling we are using an Interface
 	
 	
 	// CTOR based dependency Injection
-	public SpringSecurityConfig(UserDetails userDetails) {
+	public SpringSecurityConfig(UserDetailsService userDetailsService) {
 		super();
-		this.userDetails = userDetails;
+		this.userDetailsService = userDetailsService;
 	}
 
 
@@ -40,9 +40,10 @@ public class SpringSecurityConfig
 		return new BCryptPasswordEncoder();   // ByCryptPasswordEncoder is the implementaion of PasswordEncoder Interface
 	}
 	
-	
-	
-	
+
+
+
+
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception  {
 		
@@ -62,7 +63,7 @@ public class SpringSecurityConfig
 			
 // 		   *** In Real Time Projects Most of the Developers prefer the Method Level Spring Security ***		
 			
-			
+			authorize.requestMatchers("/api/auth/**").permitAll();   // All urls like registering a new user etc shall be accessible to anyone 
 			
 			
 			authorize.anyRequest().authenticated();
@@ -99,17 +100,13 @@ public class SpringSecurityConfig
 	
 	
 	
-	
-	
-	
-	
 // Below commented method userDetailsService is for In Memory Authentication in DB based Authentication we dont write this code
 	
 //	@Bean // Let Spring Container to manage object of this class by making this object as spring bean
 //	public UserDetailsService userDetailsService() {
 //		
 //		
-//		UserDetails akash = User.builder()
+//		UserDetails akash = User.builder()   // Here we were manually creating the user object and role
 //				.username("akash")
 //				.password(passwordEncoder().encode("password"))  // Spring expects you to pass the encoded passwords
 //				.roles("USER")

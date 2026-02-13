@@ -17,6 +17,10 @@ public interface IUserRepository extends JpaRepository<User, Long> {
 	// standard keyword provided by spring data jpa --> existsBy   Email is our field name with first letter capital
 	
 	Optional<User> findByUserNameOrEmail(String userName, String email);
-	// Custome query method retrive User by userName of email
+	// Custom query method retrive User by userName of email
+	
+	Boolean existsByUserName(String username);
+	// Custom query method to check user exists with the given userName or not
+	
 
 }

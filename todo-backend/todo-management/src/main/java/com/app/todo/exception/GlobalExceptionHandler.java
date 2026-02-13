@@ -24,4 +24,20 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
+    
+    
+    @ExceptionHandler(TodoAPIException.class)
+    public ResponseEntity<Map<String,Object>> handleTodoAPIException(TodoAPIException tx){
+    	
+    	Map<String,Object> response = new HashMap<>();
+    	response.put("timestamp", LocalDateTime.now());
+        response.put("status", tx.getStatus().value());
+        response.put("error", tx.getStatus().getReasonPhrase());
+        response.put("message", tx.getMessage());
+
+        return new ResponseEntity<>(response, tx.getStatus());
+    	
+    	
+    	
+    }
 }

@@ -6,5 +6,5 @@ import com.app.todo.entity.Role;
 
 public interface IRoleRepository extends JpaRepository<Role, Long> 
 {
-	
+	Role findByName(String name);
 }

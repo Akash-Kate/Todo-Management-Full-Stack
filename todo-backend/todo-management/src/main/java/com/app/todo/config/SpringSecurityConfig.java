@@ -84,10 +84,13 @@ public class SpringSecurityConfig
 	}
 	
 	
+	
+	
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)  throws Exception {
 		return configuration.getAuthenticationManager();
 	}
+	
 	
 	
 	

@@ -21,8 +21,14 @@ const LoginComponent = () => {
         await loginRestAPICall(loginObj).then((response) => {
             console.log(response.data);
 
-            const token = 'Basic ' + window.btoa(userNameOrEmail + ":" + password); // btoa method takes a string and converts it into the Base64 string
+            // const token = 'Basic ' + window.btoa(userNameOrEmail + ":" + password); // btoa method takes a string and converts it into the Base64 string
             // This is called a Basic Auth Token , We need to pass this basic auth token in todo related REST API'S
+
+
+            const token = 'Bearer ' + response.data.accessToken;
+
+            const role = response.data.role;
+
 
             storeToken(token); // create the token and stored it in the browser local storage
 

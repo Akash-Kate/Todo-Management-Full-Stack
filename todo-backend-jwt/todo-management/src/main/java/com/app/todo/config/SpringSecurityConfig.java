@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.app.todo.security.JwtAuthenticationEntryPoint;
 import com.app.todo.security.JwtAuthenticationFilter;
@@ -73,8 +74,8 @@ public class SpringSecurityConfig
 			authorize.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
 			
 			
-			authorize.anyRequest().authenticated();
-		}).httpBasic(Customizer.withDefaults()));
+			authorize.anyRequest().authenticated();  // Any request must be authenticated
+		})/*.httpBasic(Customizer.withDefaults())*/);   // Commenting this httpBasic otherwise without JWT token basic auth will also work
 		
 		// We have configured Spring Security such a way that we have only enabled HTTP BASIC AUTH
 		// When we do this we will get a pop when we try to access the REST APIs 
@@ -93,6 +94,8 @@ public class SpringSecurityConfig
 		//  Whenever un-authenticate user try to access the resourse then spring security throws authentication exception
 		// Then this class -> JwtAuthenticationEntryPoint will catch that exception and return error respose to client
 		
+		
+		http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class); // This JWT Filter should run before the Spring Security Filter , so writing this line of code
 		return http.build();
 	}
 	

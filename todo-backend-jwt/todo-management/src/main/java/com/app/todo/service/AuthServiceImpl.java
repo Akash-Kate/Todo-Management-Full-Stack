@@ -1,6 +1,7 @@
 package com.app.todo.service;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.app.todo.dto.JwtAuthResponse;
 import com.app.todo.dto.LoginDto;
 import com.app.todo.dto.RegisterDto;
 import com.app.todo.entity.Role;
@@ -18,6 +20,7 @@ import com.app.todo.entity.User;
 import com.app.todo.exception.TodoAPIException;
 import com.app.todo.repository.IRoleRepository;
 import com.app.todo.repository.IUserRepository;
+import com.app.todo.security.JwtTokenProvider;
 
 
 @Service
@@ -32,18 +35,21 @@ public class AuthServiceImpl implements IAuthService {
 	
 	private AuthenticationManager authmanager;
 	
+	private JwtTokenProvider jwtTokenProvider;
+	
 	
 	
 	// CTOR based dependency Injection
 	// We dont need to use @Autowired annotation because Spring will Automatically inject the dependency whenever it will find
 	// the @Service Bean with only 1 CTOR
 	public AuthServiceImpl(IUserRepository userRepo, IRoleRepository roleRepo, PasswordEncoder passwordEncoder,
-			AuthenticationManager authmanager) {
+			AuthenticationManager authmanager, JwtTokenProvider jwtTokenProvider) {
 		super();
 		this.userRepo = userRepo;
 		this.roleRepo = roleRepo;
 		this.passwordEncoder = passwordEncoder;
 		this.authmanager = authmanager;
+		this.jwtTokenProvider = jwtTokenProvider;
 	}
 
 
@@ -90,7 +96,7 @@ public class AuthServiceImpl implements IAuthService {
 
 
 	@Override
-	public String login(LoginDto loginDto) {
+	public JwtAuthResponse login(LoginDto loginDto) {
 		
 		Authentication authentication =  authmanager.authenticate(new UsernamePasswordAuthenticationToken(
 				
@@ -100,9 +106,30 @@ public class AuthServiceImpl implements IAuthService {
 				));
 		
 		SecurityContextHolder.getContext().setAuthentication(authentication);
+	
+		String token = jwtTokenProvider.generateToken(authentication);  // Generating JWT token
+		
+		Optional<User> userOptional =  userRepo.findByUserNameOrEmail(loginDto.getUserNameOrEmail(), 
+										loginDto.getUserNameOrEmail());  // We are passing either username or email, any one will get the user from DB OR condition
+		String role = null;
+		
+		if(userOptional.isPresent()) {
+			User loggedInUser = userOptional.get();
+			Optional<Role> optionalRole =  loggedInUser.getRoles().stream().findFirst();
+			
+			if(optionalRole.isPresent()) {
+				Role userRole = optionalRole.get();
+				role = userRole.getName();
+			}
+		}
+		
+		JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
+		jwtAuthResponse.setRole(role);
+		jwtAuthResponse.setAccessToken(token);
 		
 		
-		return "User Logged In Successfully !";
+		
+		return jwtAuthResponse;  // returning jwt token once user successfully logs in !
 	}
 	
 	

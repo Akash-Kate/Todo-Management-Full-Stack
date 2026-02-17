@@ -25,21 +25,21 @@ public class JwtTokenProvider
 	
 	// Create generate token utility method
 	public String generateToken(Authentication authentication) {
+		
+		System.out.println("Check if we are getting the jwt secret --> "+jwtSecret);
 			
 		String userName  = authentication.getName();
 		Date currentDate = new Date();
 		Date expireDate = new Date(currentDate.getTime() + jwtExpirationMilliseconds);
 		
 		// Create a JWT token
-		Jwts.builder()
+		return Jwts.builder()
 					 .subject(userName)
 					 .issuedAt(new Date())
 					 .expiration(expireDate)   // These method expect the parameters in Date format thats why we have converted the time in Date
 					 .signWith(key())   // Sign the JWT token using secret key
 					 .compact();
 		
-			
-			return userName;
 			
 	}
 	

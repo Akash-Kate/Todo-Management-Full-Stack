@@ -32,7 +32,7 @@ const LoginComponent = () => {
 
             storeToken(token); // create the token and stored it in the browser local storage
 
-            saveLoggedInUser(userNameOrEmail);
+            saveLoggedInUser(userNameOrEmail, role);
 
 
 
